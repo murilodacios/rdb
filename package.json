@@ -1,0 +1,11 @@
+{
+  "name": "RDB",
+  "type": "module",
+  "packageManager": "yarn@4.9.2",
+  "scripts": {
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "fastify": "^5.8.5"
+  }
+}
