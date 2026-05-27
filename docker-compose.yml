@@ -13,7 +13,7 @@ services:
       - api1
       - api2
     cpu_period: 10000
-    cpu_quota: 500
+    cpu_quota: 1000
     mem_limit: 20m
 
   api1:
@@ -34,7 +34,7 @@ services:
     volumes:
       - sockets:/sockets
     cpu_period: 10000
-    cpu_quota: 4750
+    cpu_quota: 4500
     mem_limit: 165m
 
   api2:
@@ -55,7 +55,7 @@ services:
     volumes:
       - sockets:/sockets
     cpu_period: 10000
-    cpu_quota: 4750
+    cpu_quota: 4500
     mem_limit: 165m
 
 volumes:
