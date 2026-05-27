@@ -1,28 +1,63 @@
 import fastify from "fastify";
+import { performance } from "node:perf_hooks";
+
+import { calculateFraudScore } from "./utils/calculate-fraud-score.js";
+import { loadBinaryReferences } from "./utils/load-binary-references.js";
+import { loadIvfIndex } from "./utils/load-ivf-index.js";
+import { vectorize } from "./utils/vectorize.js";
+
+const SHOW_DEBUG = process.env.DEBUG_RESPONSE === "true";
+
+const references = loadBinaryReferences();
+const ivfIndex = loadIvfIndex();
+
+console.log("Referências carregadas:", {
+  count: references.count,
+  vectorSize: references.vectorSize,
+  vectorsLength: references.vectors.length,
+  labelsLength: references.labels.length,
+});
+
+console.log("IVF carregado:", {
+  nlist: ivfIndex.nlist,
+  vectorSize: ivfIndex.vectorSize,
+  centroidsLength: ivfIndex.centroids.length,
+  clusterIndexLength: ivfIndex.clusterIndex.length,
+  bboxMinLength: ivfIndex.bboxMin.length,
+  bboxMaxLength: ivfIndex.bboxMax.length,
+});
 
 const app = fastify({
   logger: true,
 });
 
 app.get("/ready", async (request, reply) => {
-  reply.status(200).send();
+  return reply.status(200).send();
 });
 
 app.post("/fraud-score", async (request, reply) => {
-  const transaction = request.body;
+  const start = performance.now();
 
-  const flattenTransaction = (data) => {
-    const { transaction, ...rest } = data;
+  const vector = vectorize(request.body);
 
-    return {
-      ...rest,
-      ...transaction,
-    };
-  };
+  const result = calculateFraudScore(vector, references, ivfIndex);
 
-  const flattenedTransaction = flattenTransaction(transaction);
+  const duration = performance.now() - start;
 
-  return reply.status(200).send(flattenedTransaction);
+  if (!SHOW_DEBUG) {
+    return reply.status(200).send({
+      approved: result.approved,
+      fraud_score: result.fraud_score,
+    });
+  }
+
+  return reply.status(200).send({
+    ...result,
+    debug: {
+      ...result.debug,
+      duration_ms: duration,
+    },
+  });
 });
 
 app.listen({ port: 9999 }, (err, address) => {
@@ -30,5 +65,6 @@ app.listen({ port: 9999 }, (err, address) => {
     app.log.error(err);
     process.exit(1);
   }
+
   app.log.info(`Server listening at ${address}`);
 });

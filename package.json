@@ -3,7 +3,11 @@
   "type": "module",
   "packageManager": "yarn@4.9.2",
   "scripts": {
-    "dev": "node --watch src/index.js"
+    "dev": "node --watch src/index.js",
+    "generate:references": "node src/scripts/generate-references.js",
+    "generate:ivf-centroids": "node src/scripts/generate-ivf-centroids.js",
+    "generate:ivf-index": "node src/scripts/generate-ivf-index.js",
+    "benchmark": "node src/scripts/benchmark.js"
   },
   "dependencies": {
     "fastify": "^5.8.5"
