@@ -1,0 +1,7 @@
+{
+  "participants": ["murilodacios-go-node-nginx"],
+  "social": ["https://github.com/murilodacios"],
+  "source-code-repo": "https://github.com/murilodacios/rinha-de-backend-2026-murilo",
+  "stack": ["go", "nginx", "ivf", "k-means", "bbox-repair", "mmap", "node"],
+  "open_to_work": true
+}

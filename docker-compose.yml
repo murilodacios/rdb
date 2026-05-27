@@ -1,0 +1,62 @@
+version: "2.4"
+
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: rinha-nginx
+    ports:
+      - "9999:9999"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - sockets:/sockets
+    depends_on:
+      - api1
+      - api2
+    cpu_period: 10000
+    cpu_quota: 500
+    mem_limit: 20m
+
+  api1:
+    image: murilodacio/rinha-de-backend-2026:latest
+    container_name: rinha-api1
+    environment:
+      PORT: "8080"
+      UNIX_SOCKET_PATH: "/sockets/api1.sock"
+      LISTEN_UNIX_SOCKET: "/sockets/api1.sock"
+      GENERATED_PATH: "/app/generated"
+      DATASETS_PATH: "/app/datasets"
+      IVF_NPROBE: "6"
+      IVF_BBOX_REPAIR_LIMIT: "4"
+      DEBUG_RESPONSE: "false"
+      GOMAXPROCS: "1"
+      GOMEMLIMIT: "120MiB"
+      MMAP_WARMUP: "index"
+    volumes:
+      - sockets:/sockets
+    cpu_period: 10000
+    cpu_quota: 4750
+    mem_limit: 165m
+
+  api2:
+    image: murilodacio/rinha-de-backend-2026:latest
+    container_name: rinha-api2
+    environment:
+      PORT: "8080"
+      UNIX_SOCKET_PATH: "/sockets/api2.sock"
+      LISTEN_UNIX_SOCKET: "/sockets/api2.sock"
+      GENERATED_PATH: "/app/generated"
+      DATASETS_PATH: "/app/datasets"
+      IVF_NPROBE: "6"
+      IVF_BBOX_REPAIR_LIMIT: "4"
+      DEBUG_RESPONSE: "false"
+      GOMAXPROCS: "1"
+      GOMEMLIMIT: "120MiB"
+      MMAP_WARMUP: "index"
+    volumes:
+      - sockets:/sockets
+    cpu_period: 10000
+    cpu_quota: 4750
+    mem_limit: 165m
+
+volumes:
+  sockets:
