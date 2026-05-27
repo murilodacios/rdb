@@ -7,6 +7,7 @@
     "generate:references": "node src/scripts/generate-references.js",
     "generate:ivf-centroids": "node src/scripts/generate-ivf-centroids.js",
     "generate:ivf-index": "node src/scripts/generate-ivf-index.js",
+    "generate:ivf-centroids:kmeans": "node src/scripts/generate-ivf-centroids-kmeans.js",
     "benchmark": "node src/scripts/benchmark.js"
   },
   "dependencies": {
