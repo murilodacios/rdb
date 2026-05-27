@@ -1,5 +1,6 @@
 .git
 node_modules
 .yarn
+src/generated
 .DS_Store
 *.log
